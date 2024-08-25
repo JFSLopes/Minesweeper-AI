@@ -2,7 +2,7 @@
 CC = g++
 
 # Compiler flags
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -g -std=c++17
 
 # Frameworks needed for Core Graphics
 FRAMEWORKS = -framework ApplicationServices
