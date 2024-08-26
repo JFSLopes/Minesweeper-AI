@@ -30,16 +30,25 @@ public:
 
     int get_board_size() const;
     const std::vector<std::vector<Tile>>& get_board() const;
+    /**
+     * @param num_bombs Indicates the number of close bombs. This is useful in to verify if the all the close bombs are already known. The function will change it
+     * to the number of bombs left to find
+     */
+    std::vector<Coordinates> get_close_tiles_not_selected(int line, int col, int& num_bombs) const;
+    const Tile& get_tile(int line, int col) const;
     Game_State game_state() const;
     /**
      * This function will update all tile info after knowing how the board looks like. In reality only updates the number of bombs close
      */
+    void update_tile_info(int line, int col, Tile_Info info);
     void update_tile_info();
+    void update_close_tiles_info(int line, int col);
     bool play(const Coordinates& coor);
     /**
-     * If return {-1, -1} then all close tiles were already played
+     * Used when a Tile with 0 close bombs is found, because we know all close tiles will be safe
      */
-    Coordinates get_close_tile_not_played(int line, int col) const;
+    void mark_close_tiles_safe(int line, int col);
+    void mark_close_tiles_maybe(int line, int col);
     void show_board() const;
 };
 

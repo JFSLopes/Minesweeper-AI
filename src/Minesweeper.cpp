@@ -34,6 +34,31 @@ const std::vector<std::vector<Tile>>& Minesweeper::get_board() const{
     return board;
 }
 
+const Tile& Minesweeper::get_tile(int line, int col) const{
+    return board[line][col];
+}
+
+void Minesweeper::update_tile_info(int line, int col, Tile_Info info){
+    board[line][col].info = info;
+}
+
+std::vector<Coordinates> Minesweeper::get_close_tiles_not_selected(int line, int col, int& num_bombs) const{
+    std::vector<Coordinates> ans;
+    int bombs = 0;
+    for (int x = std::max(0, line - 1); x < std::min(board_size, line + 2); x++){
+        for (int y = std::max(0, col - 1); y < std::min(board_size, col + 2); y++){
+            if (!board[x][y].show and board[x][y].info == BOMB and (x != line or y != col)){ // The AI knows there is a bomb in this tile
+                bombs++;
+            }
+            if (!board[x][y].show and board[x][y].info == MAYBE and (x != line or y != col)){
+                ans.push_back({x, y});
+            }
+        }
+    }
+    num_bombs -= bombs;
+    return ans;
+}
+
 Game_State Minesweeper::game_state() const{
     int num_played_tiles = 0, num_bombs = 0;
     for (int x = 0; x < board_size; x++){
@@ -75,6 +100,20 @@ void Minesweeper::update_tile_info(){
     }
 }
 
+void Minesweeper::update_close_tiles_info(int line, int col){
+    if (board[line][col].num == 0){
+        mark_close_tiles_safe(line, col);
+    }
+    else{
+        mark_close_tiles_maybe(line, col);
+    }
+
+    for (int x = std::max(0, line - 1); x < std::min(board_size, line + 2); x++){
+        for (int y = std::max(0, col - 1); y < std::min(board_size, col + 2); y++){
+        }
+    }
+}
+
 bool Minesweeper::play(const Coordinates& coor){
     if (board[coor.x][coor.y].show){
         return false;
@@ -83,22 +122,31 @@ bool Minesweeper::play(const Coordinates& coor){
     return true;
 }
 
-Coordinates Minesweeper::get_close_tile_not_played(int line, int col) const{
+void Minesweeper::mark_close_tiles_safe(int line, int col){
     for (int x = std::max(0, line - 1); x < std::min(board_size, line + 2); x++){
         for (int y = std::max(0, col - 1); y < std::min(board_size, col + 2); y++){
-            if (!board[x][y].show and (x != line or y != col)){
-                return {x, y};
+            if (!board[x][y].show and (x != line or y != col) and board[x][y].info != BOMB){
+                board[x][y].info = NO_BOMB;
             }
         }
     }
-    return {-1, -1};
+}
+
+void Minesweeper::mark_close_tiles_maybe(int line, int col){
+    for (int x = std::max(0, line - 1); x < std::min(board_size, line + 2); x++){
+        for (int y = std::max(0, col - 1); y < std::min(board_size, col + 2); y++){
+            if (!board[x][y].show and (x != line or y != col) and board[x][y].info == NO_CLUE){ // board[x][y].info == NO_CLUE guarantees that the AI does not override a tile it knows for sure is a bomb or safe
+                board[x][y].info = MAYBE;
+            }
+        }
+    }
 }
 
 void Minesweeper::show_board() const{
     #ifdef _WIN32    
         system("cls");
     #else
-        system("clear");
+        //system("clear");
     #endif
     for (int i = 0; i < board_size; i++) {
         for (int j = 0; j < board_size; j++) {
@@ -110,7 +158,11 @@ void Minesweeper::show_board() const{
         for (int j = 0; j < board_size; j++) {
             std::cout << "| ";
             if (!board[i][j].show){
-                std::cout << " ";
+                if (board[i][j].info == BOMB){ // The AI didn't choose this tile but knows is a bomb
+                    std::cout << "\033[32mX\033[0m";
+                } else {
+                    std::cout << " ";
+                }
             }
             else if (board[i][j].num == -1){ // It is a bomb, meaning the AI lost because it choose a bomb
                 std::cout << "\033[31mX\033[0m";
