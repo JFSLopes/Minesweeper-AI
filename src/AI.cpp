@@ -77,7 +77,7 @@ Coordinates AI::get_safe_tile(Minesweeper& minesweeper) const{
     }
     return {-1, -1};
 }
-#include <iostream>
+
 void AI::update_knowledge(int num_bombs, int line, int col, Minesweeper& minesweeper){
     // Remove the played tile from the knowledge
     knowledge->remove_tile_from_knowledge({line, col});
@@ -89,14 +89,9 @@ void AI::update_knowledge(int num_bombs, int line, int col, Minesweeper& mineswe
     new_sentence.set_num_bombs(num_bombs);
     
     knowledge->add_sentence(new_sentence);
-    knowledge->apply_inference_rules(minesweeper);
+    knowledge->apply_inference_rules(minesweeper);    
+}
 
-    
-    for (Sentence& s : knowledge->knowledge){
-        for (const Coordinates& c : s.get_sentence()){
-            std::cout << "{" << c.x << ", " << c.y << "}" << "   ";
-        }
-        std::cout << "\nNum_bombs: " << s.get_num_bombs() << "\n\n";
-    }
-    
+void AI::show_current_knowledge() const{
+    knowledge->show_current_knowledge();
 }

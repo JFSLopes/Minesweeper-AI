@@ -133,11 +133,6 @@ void Minesweeper::mark_close_tiles_maybe(int line, int col){
 }
 
 void Minesweeper::show_board() const{
-    #ifdef _WIN32    
-        system("cls");
-    #else
-        //system("clear");
-    #endif
     for (int i = 0; i < board_size; i++) {
         for (int j = 0; j < board_size; j++) {
             std::cout << "+---";

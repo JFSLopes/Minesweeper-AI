@@ -4,19 +4,22 @@
 
 int main() {
     while (true){
+        std::cout << "Do you want ro see the knowledge at each state? [y/n]: ";
+        std::string ans;
+        std::cin >> ans;
+        bool show = (ans == "y" ? true : false);
+
         std::cout << "Enter the file name: ";
         std::string file_path;
-        file_path = "assets/board.minesweeper";
-        //std::cin >> file_path;
+        std::cin >> file_path;
         std::ifstream in(file_path);
         if (!in.is_open()){
             std::cout << "Invalid path.\n";
             continue;
         }
-        Game game(in);
+        Game game(in, show);
         game.run();
         std::cout << "Wanna leave? [y/n]: ";
-        std::string ans;
         std::cin >> ans;
         if (ans == "y") break;
     }

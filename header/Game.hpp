@@ -9,8 +9,9 @@ class Game{
 private:
     Minesweeper minesweeper;
     AI ai;
+    bool show_current_knowledge;
 public:
-    Game(std::ifstream& file);
+    Game(std::ifstream& file, bool show_current_knowledge);
     void run();
 };
 

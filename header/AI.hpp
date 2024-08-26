@@ -39,6 +39,8 @@ public:
     Coordinates get_safe_tile(Minesweeper& minesweeper) const;
     void update_knowledge(int num_bombs, int line, int col, Minesweeper& minesweeper);
 
+    void show_current_knowledge() const;
+
 };
 
 #endif
