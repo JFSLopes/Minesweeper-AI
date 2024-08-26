@@ -21,11 +21,11 @@ public:
      * If the num_bombs = 0, then all Tiles in 'sentence' are safe
      * If the num_bombs = sentence.size(), then all Tiles are bombs
      * 
-     * If returns true, then one of the inference rules was applied which means the sentence can be erased
+     * If returns true, then one of the inference rules was applied which means the sentence can be erased. The AI already knows what those tiles are
      */
     bool use_inference_rules(Minesweeper& minesweeper) const;
     /**
-     * 
+     * Removes Tile 'coor' from the sentence
      * @param decresase_num_bombs If true means that the Tile 'coor' is a bomb, so if the sentence has 'coor', then we remove 'coor' and decrase the num_bombs
      */
     void remove_tile(const Coordinates& coor, bool decrease_num_bombs);

@@ -84,11 +84,14 @@ void AI::update_knowledge(int num_bombs, int line, int col, Minesweeper& mineswe
 
     std::vector<Coordinates> tiles = minesweeper.get_close_tiles_not_selected(line, col, num_bombs);
 
+    // Create the new sentence
     Sentence new_sentence;
     new_sentence.add_tiles(tiles);
     new_sentence.set_num_bombs(num_bombs);
     
     knowledge->add_sentence(new_sentence);
+
+    // Apply the inference rules
     knowledge->apply_inference_rules(minesweeper);    
 }
 

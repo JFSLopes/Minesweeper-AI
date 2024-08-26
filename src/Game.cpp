@@ -13,7 +13,7 @@ void Game::run(){
         minesweeper.play(coor);
         minesweeper.show_board();
         if (show_current_knowledge) ai.show_current_knowledge();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         #ifdef _WIN32    
             system("cls");

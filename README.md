@@ -1,31 +1,59 @@
-- Lê o board do ficheiro [Board](assets/board.minesweeper) e uma AI resolve o jogo
-    - Se na primeira rodada carregar numa bomba, o jogo aceita e muda a bomba
-    - Se carregar num local sem bombas próximas, mostrar todos aqules que não têm bombas próximas que estão colados ao local escolhido
-    - Calcular quantas bombas tem próximo apenas depois da 1ª jogada 
-    - A AI vai marcar os 'Tile' com:
-        - 'B' se tiver a certeza que existe uma bomba
-        - 'C' para os que sabe que não têm bomba
-        - 'M' para os que podem ter bomba
-        - '?' para os que não tem informação
+# Minesweeper AI Game
 
-- extensão .minesweeper. O exemplo no ficheiro corresponde a [Exemplo](assets/example.png):
-    - Primeira linha são as dimensões "dimensão do tabuleiro"
-    - 'X' representam as bombas e ' ' espaço livre
+This repository contains a Minesweeper game where an AI plays based on a board representation provided by the user. The user inputs a file with the board setup, and the AI makes decisions to reveal tiles, avoid bombs, and attempt to clear the board.
 
+## Board Symbols
 
-- O board é constituído por Tiles, que por sua vez guardam:
-    - num -> número de bombas próximas
-    - info -> Informação utilizada pela AI para guardar se naquele Tile tem uma bomba, não tem, pode ter ou não sabe nada
-    - show -> Boleano que é usado para saber se a AI escolheu aquele Tile, o que implica que vai ser mostrada a sua informação quando o board for mostrado
+The game board uses the following symbols:
 
-- A AI tem acesso ao board o que significa que poderia verificar se o Tile tem ou não uma bomba, mas só usa os Tile que estão com 'show' a true, ou seja, que foram escolhidos.
+- **Green 'X'**: The AI is certain this tile contains a bomb.
+- **Red 'X'**: The AI mistakenly chose a tile containing a bomb, which it thought was safe.
+- **Blue 'S'**: Tiles that the AI has determined are safe but have not yet been revealed.
+- **White number**: The number of bombs adjacent to this tile.
+- **Empty space**: Tiles that are still unrevealed, which the AI does not yet have enough information to classify as either 'safe' or 'bomb'.
 
 
+## Important Notation (Knowledge Representation)
 
-- Função que joga:
-    1. Sempre que um Tile é jogado, esse Tile é removido de todas as Sentence e os Tiles próximos em que a AI não conhece nada sobre eles (marcados com NO_CLUE), isto é, não sabe se são seguros ou se são bombas, são marcados como MAYBE.
-    2. Para cada Tile é criada uma Sentence. São utilizados os Tiles próximos que estão marcados como MAYBE e é tido em consideração os Tiles próximos que a AI sabe que tem bombas, isto porque se o Tile escolhido estiver rodiado de 2 bombas e dos seguintes Tiles: A, B, C, D, E e a AI sabe que A e B são bombas, então a Sentence criada deve ser {C, D, E} = 0. 
-    3. Para cada Sentece é depois aplicado:
-        1. Se o nº de bombas = nº de Tiles que podem ter bomba, então são todos bombas
-        2. Se o nº de bombas for 0, nenhum dos tiles é uma bomba
-        3. Se o conjunto A tem 1 bomba e é um subconjunto de B que tem 2 bombas, então B - A tem uma bomba
+- **Sentence**: Represents the AI's knowledge about specific tiles and the number of bombs among them. A Sentence stores a set of tiles and the count of bombs within those tiles. For example, `{{1, 2}, {1, 3}, {1, 4}} -> 2` means that out of the tiles `{1, 2}`, `{1, 3}`, and `{1, 4}`, exactly two of them are bombs.
+
+- **Knowledge**: Refers to all the information the AI has accumulated at any given state of the game. It consists of all the Sentences the AI has derived up to that point. This knowledge base is updated as the game progresses and new Sentences are inferred.
+
+## File Structure
+
+The input file should have the `.minesweeper` extension. Here's how it is structured:
+
+- The first line contains the board dimensions (the board is always square).
+- 'X' represents bombs, and ' ' (space) represents free tiles.
+
+For example, given a file named [Board](assets/board.minesweeper), it would correspond to a board layout shown in [Example](assets/example.png).
+
+### Tile Structure
+
+Each tile on the board holds the following data:
+
+- **num**: The number of bombs adjacent to this tile.
+- **info**: Information the AI uses to track if the tile has a bomb, is safe, or is uncertain.
+- **show**: A boolean value indicating whether the AI has chosen this tile, making its information visible when displaying the board.
+
+## How the AI Plays
+
+1. **When a Tile is Played**:
+    - The chosen tile is removed from all sentences in which it appeared (Implementation on [`remove_tile_from_knowledge`](src/knowledge.cpp)).
+    - A new sentence is created using nearby tiles marked as "MAYBE". The AI does not consider tiles it knows are bombs or safe. For example, if a chosen tile is surrounded by two bombs and neighboring tiles A, B, C, D, and E, and the AI knows A is bomb and B is safe, the sentence created should be {C, D, E} = 1. Implementation on [`update_knowledge`](src/AI.cpp).
+
+2. **Applying Inference Rules**:
+    - **Intersection Rule**: If Sentence A contains 'x' bombs and is a subset of Sentence B with 'y' bombs, then the difference (B - A) must contain (y - x) bombs.
+    - Other Inference Rules: (Implementation on [`use_inference_rules`](src/Sentence.cpp))
+        - "If the number of bombs equals the number of tiles that could be bombs, all those tiles are bombs."
+        - "If the number of bombs is 0, none of the tiles in that sentence are bombs."
+
+3. **Tile Selection Strategy**:
+    - The AI prioritizes unrevealed tiles marked as 'NO_BOMB'.
+    - Next, it considers unrevealed tiles marked as 'MAYBE'.
+    - If neither of the above options are available, it picks a random tile to play.
+    - Implentation on [`play`](src/AI.cpp)
+
+---
+
+This AI Minesweeper offers an interesting demonstration of logical inference and decision-making in a classic game setting.

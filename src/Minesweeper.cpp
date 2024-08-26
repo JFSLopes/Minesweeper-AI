@@ -50,7 +50,7 @@ std::vector<Coordinates> Minesweeper::get_close_tiles_not_selected(int line, int
             if (!board[x][y].show and board[x][y].info == BOMB and (x != line or y != col)){ // The AI knows there is a bomb in this tile
                 bombs++;
             }
-            if (!board[x][y].show and board[x][y].info == MAYBE and (x != line or y != col)){
+            if (!board[x][y].show and board[x][y].info == MAYBE and (x != line or y != col)){ // Tiles that might have the bomb
                 ans.push_back({x, y});
             }
         }
@@ -110,16 +110,6 @@ bool Minesweeper::play(const Coordinates& coor){
     }
     board[coor.x][coor.y].show = true;
     return true;
-}
-
-void Minesweeper::mark_close_tiles_safe(int line, int col){
-    for (int x = std::max(0, line - 1); x < std::min(board_size, line + 2); x++){
-        for (int y = std::max(0, col - 1); y < std::min(board_size, col + 2); y++){
-            if (!board[x][y].show and (x != line or y != col) and board[x][y].info != BOMB){
-                board[x][y].info = NO_BOMB;
-            }
-        }
-    }
 }
 
 void Minesweeper::mark_close_tiles_maybe(int line, int col){
