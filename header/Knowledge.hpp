@@ -10,6 +10,8 @@ private:
     //std::vector<Sentence> knowledge;
 
     void remove_tiles_from_knowledge(const Sentence& sentence);
+    bool is_sentenceA_subset_sentenceB(const Sentence& smaller, const Sentence& bigger) const;
+    std::vector<Coordinates> get_unmatched_tiles(const Sentence& smaller, const Sentence& bigger) const;
 public:
     std::vector<Sentence> knowledge;
     void add_sentence(const Sentence& sentence);

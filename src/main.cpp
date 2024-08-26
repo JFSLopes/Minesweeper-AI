@@ -6,7 +6,7 @@ int main() {
     while (true){
         std::cout << "Enter the file name: ";
         std::string file_path;
-        file_path = "assets/board1.minesweeper";
+        file_path = "assets/board.minesweeper";
         //std::cin >> file_path;
         std::ifstream in(file_path);
         if (!in.is_open()){

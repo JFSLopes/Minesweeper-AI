@@ -101,17 +101,7 @@ void Minesweeper::update_tile_info(){
 }
 
 void Minesweeper::update_close_tiles_info(int line, int col){
-    if (board[line][col].num == 0){
-        mark_close_tiles_safe(line, col);
-    }
-    else{
-        mark_close_tiles_maybe(line, col);
-    }
-
-    for (int x = std::max(0, line - 1); x < std::min(board_size, line + 2); x++){
-        for (int y = std::max(0, col - 1); y < std::min(board_size, col + 2); y++){
-        }
-    }
+    mark_close_tiles_maybe(line, col);
 }
 
 bool Minesweeper::play(const Coordinates& coor){
@@ -160,6 +150,9 @@ void Minesweeper::show_board() const{
             if (!board[i][j].show){
                 if (board[i][j].info == BOMB){ // The AI didn't choose this tile but knows is a bomb
                     std::cout << "\033[32mX\033[0m";
+                } 
+                else if (board[i][j].info == NO_BOMB) {
+                    std::cout << "\033[34mS\033[0m";
                 } else {
                     std::cout << " ";
                 }
