@@ -56,4 +56,21 @@ Each tile on the board holds the following data:
 
 ---
 
-This AI Minesweeper offers an interesting demonstration of logical inference and decision-making in a classic game setting.
+## How to Run
+
+1. Open the project root directory.  
+2. Compile the project using `make`:  
+```bash
+make
+```
+3. Run the game:
+```bash
+./minesweeper
+```
+4. The program will first ask: `Do you want to see the knowledge at each state? [y/n]:`
+- Enter y to print the AI’s knowledge base evolution after each move.
+- Enter n to skip this and just see the board updates.
+
+5.	Then it will ask for the board file: `Enter the file name:`
+- Provide the name of a .minesweeper file (a custom format for the board).
+- Provide the full path to the board
